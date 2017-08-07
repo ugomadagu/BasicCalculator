@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public class Calculator {
   public String evaluate(String expression) {
+    System.out.println(expression);
     if(expression == null) {
       return null;
     }
@@ -24,6 +25,8 @@ public class Calculator {
       String operator = m.group(2);
       String operand2 = m.group(3);
       String restOfExpression = m.group(4);
+
+      System.out.println("operand1: " + operand1 + " | operator: " + operator + " | operand2: " + operand2 + " | restOfExpression:" + restOfExpression);
 
       if(operator.equals("+") || operator.equals("-")) {
         result = doMath(operand1, operator, evaluate(operand2 + restOfExpression));
@@ -52,6 +55,8 @@ public class Calculator {
       result = num1 + num2;
     } else if(operator.equals("-")) {
       result = num1 - num2;
+    } else {
+      throw new IllegalArgumentException("Bad Operator.");
     }
     return Double.toString(result);
   }
