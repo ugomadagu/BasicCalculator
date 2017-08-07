@@ -1,6 +1,7 @@
 package arithmetic;
 
-import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Calculator {
   public String evaluate(String expression) {
@@ -8,45 +9,35 @@ public class Calculator {
       return null;
     }
 
-    String[] operandTokens = expression.split("[^\\w\\.]+");
-    String[] operatorTokens = expression.split("[\\w\\s\\.]+");
+    if(expression.matches("\\d+")) {
+      return expression;
+    }
 
-    LinkedList<Integer> operatorIndicesToProccess = new LinkedList<Integer>();
+    String pattern = "([\\w\\.]+)\\s*([^\\w\\.\\s])\\s*([\\w\\.]+)\\s*(\\.*)";
+    Pattern r = Pattern.compile(pattern);
+    Matcher m = r.matcher(expression);
 
-    for(int i = 0; i < operatorTokens.length; i++) {
-      String operator = operatorTokens[i];
-      if(operator.equals("*") || (operator.equals("/"))) {
-        operatorIndicesToProccess.addFirst(i);
-      } else if(operator.equals("+") || (operator.equals("-"))) {
-        operatorIndicesToProccess.addLast(i);
-      } else if(operator.equals("")) {
-          // This if statement handles the first empty token that always appears in operatorTokens
+    String result;
+
+    if (m.find()) {
+      String operand1 = m.group(1);
+      String operator = m.group(2);
+      String operand2 = m.group(3);
+      String restOfExpression = m.group(4);
+
+      if(operator.equals("+") || operator.equals("-")) {
+        result = doMath(operand1, operator, evaluate(operand2 + restOfExpression));
       } else {
-        throw new IllegalArgumentException("Bad operator provided.");
+        String firstCalculation = doMath(operand1, operator, operand2);
+        result = evaluate(firstCalculation + restOfExpression);
       }
+    } else {
+      throw new IllegalArgumentException("Bad expression.");
     }
 
-    for(int i : operatorIndicesToProccess) {
-      int operandIndex = i - 1;
-      int operatorIndex = i;
+    return result;
 
-      String operator = operatorTokens[operatorIndex];
-      String operand1 = operandTokens[operandIndex];
-      String operand2 = operandTokens[++operandIndex];
 
-      if(operand2 == null) {
-        while(operandTokens[operandIndex] == null) {
-          operandIndex++;
-        }
-        operand2 = operandTokens[operandIndex];
-      }
-
-      String result = doMath(operand1, operator, operand2);
-      operandTokens[operatorIndex - 1] = null;
-      operandTokens[operandIndex] = result;
-    }
-
-    return operandTokens[operandTokens.length - 1];
   }
 
   private String doMath(String operand1, String operator, String operand2) {
