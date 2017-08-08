@@ -121,5 +121,33 @@ public class Tests{
     assertTrue(exceptionThrown);
   }
 
+  @Test
+  public void BadLeftOperand() {
+    String expression = "2s + 3";
+    boolean exceptionThrown = false;
+
+    try {
+      calc.evaluate(expression);
+    } catch (Exception e) {
+      exceptionThrown = true;
+      assertTrue(e.toString().equals("java.lang.IllegalArgumentException: 2s is not a valid number"));
+    }
+    assertTrue(exceptionThrown);
+  }
+
+  @Test
+  public void BadRightOperand() {
+    String expression = "2 + 3g";
+    boolean exceptionThrown = false;
+
+    try {
+      calc.evaluate(expression);
+    } catch (Exception e) {
+      exceptionThrown = true;
+      assertTrue(e.toString().equals("java.lang.IllegalArgumentException: 3g is not a valid number"));
+    }
+    assertTrue(exceptionThrown);
+  }
+
 
 }

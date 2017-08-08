@@ -20,6 +20,15 @@ public class Calculator {
     double result;
 
     if (m.find()) {
+      boolean operand1IsValid = m.group(1).matches("\\-*\\d+(\\.\\d+)*");
+      boolean operand2IsValid = m.group(3).matches("\\-*\\d+(\\.\\d+)*");
+
+      if(!operand1IsValid && operand2IsValid) {
+        throw new IllegalArgumentException(m.group(1) + " is not a valid number");
+      } else if(operand1IsValid && !operand2IsValid) {
+        throw new IllegalArgumentException(m.group(3) + " is not a valid number");
+      }
+
       double operand1 = Double.parseDouble(m.group(1));
       String operator = m.group(2);
       double operand2 = Double.parseDouble(m.group(3));
