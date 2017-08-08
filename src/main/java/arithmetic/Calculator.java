@@ -13,7 +13,7 @@ public class Calculator {
       return Double.parseDouble(expression);
     }
 
-    String pattern = "([\\w\\.\\-*]+)\\s*([^\\w\\.\\s])\\s*([\\w\\.\\-*]+)\\s*(.*)";
+    String pattern = "([\\w\\.\\-*]+)\\s*([^\\w\\.\\s])\\s*(\\-*[\\w\\.]+)\\s*(.*)";
     Pattern r = Pattern.compile(pattern);
     Matcher m = r.matcher(expression);
 
