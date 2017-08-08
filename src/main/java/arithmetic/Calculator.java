@@ -25,8 +25,15 @@ public class Calculator {
       String operand2 = m.group(3);
       String restOfExpression = m.group(4);
 
-      if(operator.equals("+") || operator.equals("-")) {
+      if(operator.equals("+")) {
         result = doMath(operand1, operator, evaluate(operand2 + restOfExpression));
+      } else if(operator.equals("-")) {
+        if(operand2.charAt(0) == '-') {
+          operand2 = operand2.substring(1);
+        } else {
+          operand2 = "-" + operand2;
+        }
+        result = doMath(operand1, "+", evaluate(operand2 + restOfExpression));
       } else {
         String firstCalculation = doMath(operand1, operator, operand2);
         result = evaluate(firstCalculation + restOfExpression);
