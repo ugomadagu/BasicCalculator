@@ -49,8 +49,6 @@ public class Calculator {
       result = operand1 / operand2;
     } else if(operator.equals("+")) {
       result = operand1 + operand2;
-    } else if(operator.equals("-")) {
-      result = operand1 - operand2;
     } else {
       throw new IllegalArgumentException("Bad Operator.");
     }
