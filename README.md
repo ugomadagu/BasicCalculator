@@ -8,7 +8,7 @@ This is my implimentation of a basic calculator. The implimentation on the maste
 ```./gradlew test```   
 
 ### Manually interact with the application via command line
-After building, run ```java -cp build/classes/java/main arithmetic.CliMain``` from the top-level BasicCalculator directory to start the application. Then, you can enter arithmetic expressions and receive the answers in the console.
+After building, run ```java -cp build/classes/java/main arithmetic.CliMain``` from the top-level BasicCalculator directory to start the application. Then, you can enter arithmetic expressions and receive the answers in the console. To exit the program, type ```exit``` into the console.
 
 ### Assumptions
 
