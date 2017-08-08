@@ -1,52 +1,48 @@
 package arithmetic;
 
-import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Calculator {
   public String evaluate(String expression) {
-    if(expression == null) {
-      return null;
+    if(expression == null || expression.equals("") || expression.matches("\\s+")) {
+      throw new IllegalArgumentException("Expression must have at least two operands and one operator.");
     }
 
-    String[] operandTokens = expression.split("[^\\w\\.]+");
-    String[] operatorTokens = expression.split("[\\w\\s\\.]+");
-
-    LinkedList<Integer> operatorIndicesToProccess = new LinkedList<Integer>();
-
-    for(int i = 0; i < operatorTokens.length; i++) {
-      String operator = operatorTokens[i];
-      if(operator.equals("*") || (operator.equals("/"))) {
-        operatorIndicesToProccess.addFirst(i);
-      } else if(operator.equals("+") || (operator.equals("-"))) {
-        operatorIndicesToProccess.addLast(i);
-      } else if(operator.equals("")) {
-          // This if statement handles the first empty token that always appears in operatorTokens
-      } else {
-        throw new IllegalArgumentException("Bad operator provided.");
-      }
+    if(expression.matches("(\\-*\\d+(\\.\\d+)*)")) {
+      return expression;
     }
 
-    for(int i : operatorIndicesToProccess) {
-      int operandIndex = i - 1;
-      int operatorIndex = i;
+    String pattern = "([\\w\\.\\-*]+)\\s*([^\\w\\.\\s])\\s*([\\w\\.\\-*]+)\\s*(.*)";
+    Pattern r = Pattern.compile(pattern);
+    Matcher m = r.matcher(expression);
 
-      String operator = operatorTokens[operatorIndex];
-      String operand1 = operandTokens[operandIndex];
-      String operand2 = operandTokens[++operandIndex];
+    String result;
 
-      if(operand2 == null) {
-        while(operandTokens[operandIndex] == null) {
-          operandIndex++;
+    if (m.find()) {
+      String operand1 = m.group(1);
+      String operator = m.group(2);
+      String operand2 = m.group(3);
+      String restOfExpression = m.group(4);
+
+      if(operator.equals("+")) {
+        result = doMath(operand1, operator, evaluate(operand2 + restOfExpression));
+      } else if(operator.equals("-")) {
+        if(operand2.charAt(0) == '-') {
+          operand2 = operand2.substring(1);
+        } else {
+          operand2 = "-" + operand2;
         }
-        operand2 = operandTokens[operandIndex];
+        result = doMath(operand1, "+", evaluate(operand2 + restOfExpression));
+      } else {
+        String firstCalculation = doMath(operand1, operator, operand2);
+        result = evaluate(firstCalculation + restOfExpression);
       }
-
-      String result = doMath(operand1, operator, operand2);
-      operandTokens[operatorIndex - 1] = null;
-      operandTokens[operandIndex] = result;
+    } else {
+      throw new IllegalArgumentException("Bad expression.");
     }
 
-    return operandTokens[operandTokens.length - 1];
+    return result;
   }
 
   private String doMath(String operand1, String operator, String operand2) {
@@ -61,6 +57,8 @@ public class Calculator {
       result = num1 + num2;
     } else if(operator.equals("-")) {
       result = num1 - num2;
+    } else {
+      throw new IllegalArgumentException("Bad Operator.");
     }
     return Double.toString(result);
   }
